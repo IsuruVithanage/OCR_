@@ -1,17 +1,26 @@
-import PyPDF2
+from pdf2image import convert_from_path
+from pytesseract import image_to_string
 
-def extract_text(pdf_file: str) -> [str]:
-    with open(pdf_file, 'rb') as pdf_file:
-        reader = PyPDF2.PdfReader(pdf_file, strict=False)
-        pdf_text = []
 
-        for page in reader.pages:
-            content = page.extract_text()
-            pdf_text.append(content)
+def convert_pdf_to_img(pdf_file):
+    return convert_from_path(pdf_file)
 
-    return pdf_text
 
-if __name__ == '__main__':
-    extracted_text = extract_text('TestOCR.pdf')
-    for text in extracted_text:
-        print(text)
+def convert_image_to_text(file):
+    text = image_to_string(file)
+    return text
+
+
+def get_text_from_any_pdf(pdf_file):
+    images = convert_pdf_to_img(pdf_file)
+    print(images)
+    final_text = ""
+    for pg, img in enumerate(images):
+        final_text += convert_image_to_text(img)
+        # print("Page n°{}".format(pg))
+        # print(convert_image_to_text(img))
+
+    return final_text
+
+path_to_pdf = 'AAOS4461592-100824_2662 (3).pdf'
+print(get_text_from_any_pdf(path_to_pdf))
