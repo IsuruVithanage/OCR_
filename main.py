@@ -1,26 +1,51 @@
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
+from PIL import Image
+import os
 
 
 def convert_pdf_to_img(pdf_file):
+    """Converts PDF into images."""
     return convert_from_path(pdf_file)
 
 
 def convert_image_to_text(file):
+    """Extracts text from a single image."""
     text = image_to_string(file)
     return text
 
 
-def get_text_from_any_pdf(pdf_file):
-    images = convert_pdf_to_img(pdf_file)
-    print(images)
+def is_image(file_path):
+    """Checks if the file is an image based on its extension."""
+    image_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.tiff']
+    return os.path.splitext(file_path)[1].lower() in image_extensions
+
+
+def get_text_from_any_file(file_path):
+    """Extracts text from either a PDF or an image file."""
     final_text = ""
-    for pg, img in enumerate(images):
-        final_text += convert_image_to_text(img)
-        # print("Page n°{}".format(pg))
-        # print(convert_image_to_text(img))
+
+    if file_path.lower().endswith('.pdf'):
+        # Process PDF
+        images = convert_pdf_to_img(file_path)
+        for pg, img in enumerate(images):
+            final_text += convert_image_to_text(img)
+    elif is_image(file_path):
+        # Process image
+        img = Image.open(file_path)
+        final_text = convert_image_to_text(img)
+    else:
+        raise ValueError("Unsupported file type. Please provide a PDF or an image.")
 
     return final_text
 
+
+# Example usage for PDF and image
 path_to_pdf = 'AAOS4461592-100824_2662 (3).pdf'
-print(get_text_from_any_pdf(path_to_pdf))
+path_to_image = 'Screenshot 2024-10-07 at 16.56.46.png'
+
+# Print text from PDF
+print(get_text_from_any_file(path_to_pdf))
+
+# Print text from Image
+print(get_text_from_any_file(path_to_image))
