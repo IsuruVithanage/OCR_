@@ -39,13 +39,19 @@ def get_text_from_any_file(file_path):
 
     return final_text
 
+def print_lines_with_keyword(text, keyword):
+    """Prints only lines containing the keyword (case-insensitive)."""
+    lines = text.splitlines()
+    for line in lines:
+        if line.strip().lower().startswith(keyword.lower()):
+            print(line)
 
 # Example usage for PDF and image
 path_to_pdf = 'AAOS4461592-100824_2662 (3).pdf'
 path_to_image = 'Screenshot 2024-10-07 at 16.56.46.png'
 
-# Print text from PDF
-print(get_text_from_any_file(path_to_pdf))
+# Get text from PDF or image
+extracted_text = get_text_from_any_file(path_to_pdf)  # You can replace with path_to_image
 
-# Print text from Image
-print(get_text_from_any_file(path_to_image))
+# Print lines containing the word 'What'
+print_lines_with_keyword(extracted_text, 'LDL CHOLESTEROL')
